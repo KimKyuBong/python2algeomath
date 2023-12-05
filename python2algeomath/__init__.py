@@ -1,3 +1,5 @@
+__version__ = "0.0.4"
+
 import xml.etree.ElementTree as ET
 import random as rd
 
@@ -60,7 +62,7 @@ class AlgeoMathBlockBuilder:
         self.add_basic_input_block(str(y))
         self.end_block()
         self.add_value("name")
-        self.add_basic_input_block(f'"{name}"')
+        self.add_basic_input_block(f"{name}")
         self.end_block()
         self.add_next()
 
@@ -95,14 +97,25 @@ class AlgeoMathBlockBuilder:
         self.add_basic_input_block(f"{variable} += {step}")
         self.end_block()
         block = ET.SubElement(self.current_block, "statement", name="statements")
+        # control_for 블록을 stack에 추가합니다.
         self.block_stack.append(self.current_block)
         self.current_block = block
 
     def end_control_for(self):
-        if self.block_stack:
+        while self.block_stack:
+            # 현재 블록을 스택에서 꺼냅니다.
             self.current_block = self.block_stack.pop()
-        else:
+
+            # <statement> 태그를 찾았을 경우 더 이상 스택에서 꺼내지 않고 종료합니다.
+            if self.current_block.tag == "statement":
+                break
+
+        # 스택이 비어있으면 root로 돌아갑니다.
+        if not self.block_stack:
             self.current_block = self.root
+
+        self.end_block()
+        self.add_next()
 
     def create_function_graph(self, latex):
         self.add_block("create_function_fx")
@@ -121,12 +134,18 @@ class AlgeoMathBlockBuilder:
     def execute_set(self, name, latex):
         self.add_block("algeo_execute_set_name")
         self.add_value("name")
-        self.add_basic_input_block(f'"{name}"')
+        self.add_basic_input_block(f"{name}")
         self.end_block()
         self.add_value("code")
-        self.add_basic_input_block(f'"{latex}"')
+        self.add_basic_input_block(f"{latex}")
         self.end_block()
         self.add_next()
+
+    def add_function_graph(self, func_initial, latex):
+        self.execute_set(f'"{func_initial}"', f'"{func_initial}(x)={latex}"')
+
+    def add_function_dot(self, name, x, func_initial):
+        self.execute_set(name, f'"("+({x})+",{func_initial}("+({x})+"))"')
 
     def to_xml_string(self):
         return ET.tostring(self.root, encoding="utf-8", method="xml")
