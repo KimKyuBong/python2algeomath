@@ -118,13 +118,6 @@ class Builder:
         self.end_block()
         self.add_next()
 
-    def create_function_graph(self, latex):
-        self.add_block("create_function_fx")
-        self.add_value("xValue")
-        self.add_basic_input_block(f'"{latex}"')
-        self.end_block()
-        self.add_next()
-
     def hide_point(self):
         self.add_block("turtle_all_dot_name_show_hide")
         self.add_field("fielditem_object", "점과 점의 이름")
@@ -141,3 +134,24 @@ class Builder:
         self.add_basic_input_block(f"{latex}")
         self.end_block()
         self.add_next()
+
+    def create_function_graph(self, latex):
+        self.add_block("create_function_fx")
+        self.add_value("xValue")
+        self.add_basic_input_block(f"{latex}")
+        self.end_block()
+        self.add_next()
+
+    # function 관련 기능 구현
+
+    def add_function_graph(self, func_initial, latex):
+        self.execute_set(f'"{func_initial}"', f'"{func_initial}(x)={latex}"')
+
+    def add_function_dot(self, name, x, func_initial):
+        self.execute_set(name, f'"("+({x})+",{func_initial}("+({x})+"))"')
+
+    # polygon관련 기능 구현
+
+    def add_polygon(self, name, list):
+        polygonStr = ",".join(list)
+        self.execute_set(f'"{name}"', f'"Polygon({polygonStr})"')
