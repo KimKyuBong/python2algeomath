@@ -3,3 +3,4 @@ dist/
 *.egg-info
 workflows
 */test.py
+**/__pycache__/
