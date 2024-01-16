@@ -138,7 +138,7 @@ class Builder:
     def create_function_graph(self, latex):
         self.add_block("create_function_fx")
         self.add_value("xValue")
-        self.add_basic_input_block(f"{latex}")
+        self.add_basic_input_block(f'"{latex}"')
         self.end_block()
         self.add_next()
 
