@@ -1,6 +1,7 @@
 build/
 dist/
 *.egg-info
+token.text
 workflows
 */test.py
 **/__pycache__/

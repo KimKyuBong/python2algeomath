@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="python2algeomath",  # Replace with your own username
-    version="0.0.8",
+    version="0.0.9",
     author="KimKyuBong",
     author_email="tfm0405@gmail.com",
     description="to be helpful python code for Math Teacher",
